@@ -55,16 +55,25 @@ check_system() {
     
     source /etc/os-release
     
-    if [ "$ID" != "ubuntu" ] || [ "$VERSION_ID" != "24.04" ]; then
+    # 支持Ubuntu 22.04和24.04
+    if [ "$ID" != "ubuntu" ]; then
         log_warn "当前系统: $PRETTY_NAME"
-        log_warn "推荐系统: Ubuntu 24.04 LTS"
+        log_warn "推荐系统: Ubuntu 22.04 LTS 或 Ubuntu 24.04 LTS"
         read -p "是否继续安装? (y/n): " -n 1 -r
         echo
         if [[ ! $REPLY =~ ^[Yy]$ ]]; then
             exit 1
         fi
-    else
+    elif [ "$VERSION_ID" == "22.04" ] || [ "$VERSION_ID" == "24.04" ]; then
         log_info "系统版本检查通过: $PRETTY_NAME"
+    else
+        log_warn "当前系统: $PRETTY_NAME"
+        log_warn "推荐系统: Ubuntu 22.04 LTS 或 Ubuntu 24.04 LTS"
+        read -p "是否继续安装? (y/n): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            exit 1
+        fi
     fi
     
     # 显示内核版本
